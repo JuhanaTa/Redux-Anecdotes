@@ -1,10 +1,10 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import {voteAnecdote} from '../reducers/anecdoteReducer'
-import {createNotification, hideNotification} from '../reducers/notificationReducer'
+import {createNotification} from '../reducers/notificationReducer'
 
 const AnecdoteList = (props) => {
-
+  const dispatch = useDispatch()
   
     //const anecdotes = useSelector(state => state.anecdotes)
     props.anecdotes.sort(function (a,b){
@@ -20,7 +20,7 @@ const AnecdoteList = (props) => {
        </div>
        <div>
          has {anecdote.votes}
-         <button onClick={() => vote(props, anecdote.id)}>vote</button>
+         <button onClick={() => vote(props, anecdote.id, dispatch)}>vote</button>
         
        </div>
        </div>
@@ -30,12 +30,12 @@ const AnecdoteList = (props) => {
     
 }
 
-const vote =  async (props, id) => {
+const vote =  async (props, id, dispatch) => {
+  
   await props.voteAnecdote(id)
   const votedAnecdote = props.anecdotes.find(n => n.id === id)
   
-  props.createNotification(`you voted '${votedAnecdote.content}'`)
-  setTimeout(() => {props.hideNotification()},5000)
+  dispatch(createNotification(`you voted '${votedAnecdote.content}'`, 10))
 }
 
   const stateToProps = (state) => {
@@ -44,7 +44,6 @@ const vote =  async (props, id) => {
 
   const mapDispatchToProps = {  
     createNotification,
-    hideNotification,
     voteAnecdote,
   }
 

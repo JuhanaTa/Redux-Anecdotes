@@ -1,6 +1,6 @@
 
 const initialState = []
-
+let timeoutID
 let style = {
     border: 'solid',
     padding: 10,
@@ -22,8 +22,9 @@ const notificationReducer = (state = initialState, action) => {
 }
 
 
-export const createNotification = (content) => {
-    
+export const createNotification = (content, time) => {
+    window.clearTimeout(timeoutID)
+    time = time * 1000
     console.log("gone through")
     return async dispatch => {
 
@@ -32,13 +33,24 @@ export const createNotification = (content) => {
             type: 'CREATE_NOTIFICATION', 
             data: {content, style} 
         })
+
+        timeoutID = setTimeout(() => {
+        console.log('id of timeout: ' +timeoutID)
+        content = ''
+        dispatch
+        ({ 
+            type: 'SET_HIDDEN',
+            data: {content}
+        })
+        }, time);
         
     }
     
 
 }
 
- export const hideNotification = (timeoutID) => {
+ /*export const hideNotification = (timeoutID) => {
+    console.log('inside hide')
     const content = ''
     return async dispatch => {
     dispatch
@@ -46,7 +58,7 @@ export const createNotification = (content) => {
         type: 'SET_HIDDEN',
         data: {content}
     })
-}}
+}}*/
 
 
 export default notificationReducer
